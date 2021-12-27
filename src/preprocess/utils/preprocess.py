@@ -20,51 +20,24 @@ def cramers_v(x, y):
     return np.sqrt(phi2corr/min((kcorr-1), (rcorr-1)))
 
 
-def preprocess(df, drop_col1, drop_col2):
-    def feature_engineering(df):
-        '''
-        All type of feature engineering
-        '''
-        # Change the data type: from object to datetime
-        df['timestamp'] = pd.to_datetime(
-            df['timestamp'], infer_datetime_format=True)
-
-        # Time features
-        df['weekday'] = df['timestamp'].dt.dayofweek
-        df['month'] = df['timestamp'].dt.month
-        df['year'] = df['timestamp'].dt.year
-
-        # get dummies forom time features
-        weekday_dummy = pd.get_dummies(
-            df['weekday'], prefix='weekday', prefix_sep='_')
-        month_dummy = pd.get_dummies(
-            df['month'], prefix='month', prefix_sep='_')
-        year_dummy = pd.get_dummies(
-            df['month'], prefix='month', prefix_sep='_')
-
-        # Join dummies & dataset
-        df = pd.concat([df, weekday_dummy, month_dummy, year_dummy], axis=1)
-        return df
-
-    df = feature_engineering(df)
-
+def preprocess(df, drop_cols):
     def label_feature(df):
         '''
-        Creation of a label feature
+        Selection of a label feature
         '''
-        df['label'] = np.where(df['rating'] >= 4.0, 1, 0)
+        df['y'] = df['Global_Sales']
+        df = df.drop(['Global_Sales'], axis = 1)
         return df
 
     df = label_feature(df)
 
-    def drop_columns(df, drop_col1, drop_col2):
+    def drop_columns(df, drop_cols):
         '''
         Eliminates all the not necessary or duplicate
         columns
         '''
-        df = df.drop(drop_col1, axis=1)
-        df = df.drop(drop_col2, axis=1)
+        df = df.drop(drop_cols, axis=1)
         return df
 
-    df = drop_columns(df, drop_col1, drop_col2)
+    df = drop_columns(df, drop_cols)
     return df
