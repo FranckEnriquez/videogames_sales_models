@@ -9,6 +9,8 @@ The objective of this challenge is to assess you ability to:
 - obtaining clear, useful, and business driven insights from data and models
 
 ## Repository structure
+```URL: https://github.com/FranckEnriquez/movies_rating_model
+<rootDir>
 
 └── ml
     └── analysis
